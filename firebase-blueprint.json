@@ -1,0 +1,544 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User account for authentication and role tracking",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["MASTER_OWNER", "EMPRESA_ADMIN", "GERENTE_FILIAL", "COMERCIAL", "FINANCEIRO", "CONSULTA", "EMPLOYEE"] },
+        "status": { "type": "string", "enum": ["ativo", "inativo", "suspenso"] },
+        "companyId": { "type": "string" },
+        "branchId": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "lastLogin": { "type": "string" }
+      },
+      "required": ["uid", "email", "role", "status"]
+    },
+    "EmployeeProfile": {
+      "title": "EmployeeProfile",
+      "description": "Employee and enterprise staff profile and granular permissions",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
+        "role": { "type": "string" },
+        "userRoleType": { "type": "string" },
+        "companyId": { "type": "string" },
+        "branchId": { "type": "string" },
+        "status": { "type": "string", "enum": ["ativo", "inativo", "suspenso"] },
+        "permissions": { "type": "array" },
+        "createdAt": { "type": "string" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["id", "name", "email", "role", "status", "permissions"]
+    },
+    "PartnerCompany": {
+      "title": "PartnerCompany",
+      "description": "Partner companies and enterprises in the multi-company network",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string" },
+        "corporateName": { "type": "string" },
+        "tradeName": { "type": "string" },
+        "cnpj": { "type": "string" },
+        "contactName": { "type": "string" },
+        "contactRole": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "phone": { "type": "string" },
+        "cep": { "type": "string" },
+        "street": { "type": "string" },
+        "number": { "type": "string" },
+        "complement": { "type": "string" },
+        "neighborhood": { "type": "string" },
+        "city": { "type": "string" },
+        "state": { "type": "string" },
+        "logoUrl": { "type": "string" },
+        "status": { "type": "string", "enum": ["ativa", "pendente", "suspensa", "inativa"] },
+        "planContracted": { "type": "string" },
+        "branchesLimit": { "type": "number" },
+        "clientsLimit": { "type": "number" },
+        "modulesAllowed": { "type": "array" },
+        "adminEmail": { "type": "string" },
+        "adminName": { "type": "string" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "code", "corporateName", "tradeName", "status", "adminEmail"]
+    },
+    "Branch": {
+      "title": "Branch",
+      "description": "Branches and regional units belonging to a partner company",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string" },
+        "companyId": { "type": "string" },
+        "name": { "type": "string" },
+        "cnpj": { "type": "string" },
+        "managerName": { "type": "string" },
+        "managerEmail": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "cep": { "type": "string" },
+        "street": { "type": "string" },
+        "number": { "type": "string" },
+        "complement": { "type": "string" },
+        "neighborhood": { "type": "string" },
+        "city": { "type": "string" },
+        "state": { "type": "string" },
+        "status": { "type": "string", "enum": ["ativa", "suspensa", "inativa"] },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "code", "companyId", "name", "status"]
+    },
+    "Customer": {
+      "title": "Customer",
+      "description": "Customer and subscriber information scoped to company and branch",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string" },
+        "name": { "type": "string" },
+        "cpf": { "type": "string" },
+        "whatsapp": { "type": "string" },
+        "email": { "type": "string" },
+        "cep": { "type": "string" },
+        "street": { "type": "string" },
+        "number": { "type": "string" },
+        "complement": { "type": "string" },
+        "neighborhood": { "type": "string" },
+        "city": { "type": "string" },
+        "state": { "type": "string" },
+        "reference": { "type": "string" },
+        "registrationDate": { "type": "string" },
+        "source": { "type": "string" },
+        "companyId": { "type": "string" },
+        "branchId": { "type": "string" },
+        "employeeResponsibleId": { "type": "string" },
+        "partnerId": { "type": "string" },
+        "notes": { "type": "string" },
+        "status": { "type": "string", "enum": ["ativo", "inativo", "pendente", "inadimplente"] },
+        "dataConsent": { "type": "boolean" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "code", "name", "cpf", "whatsapp", "status", "companyId"]
+    },
+    "Plan": {
+      "title": "Plan",
+      "description": "Subscription plan definitions",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "billingCycle": { "type": "string", "enum": ["mensal", "trimestral", "semestral", "anual", "personalizado"] },
+        "durationMonths": { "type": "number" },
+        "renewalRules": { "type": "string" },
+        "terms": { "type": "string" },
+        "additionalFees": { "type": "number" },
+        "allowedDiscounts": { "type": "number" },
+        "status": { "type": "string", "enum": ["ativo", "inativo"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "name", "price", "billingCycle", "status"]
+    },
+    "Subscription": {
+      "title": "Subscription",
+      "description": "Customer recurring subscription",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "customerId": { "type": "string" },
+        "companyId": { "type": "string" },
+        "branchId": { "type": "string" },
+        "planId": { "type": "string" },
+        "startDate": { "type": "string" },
+        "firstDueDate": { "type": "string" },
+        "nextDueDate": { "type": "string" },
+        "contractValue": { "type": "number" },
+        "discountApplied": { "type": "number" },
+        "billingCycle": { "type": "string" },
+        "endDate": { "type": "string" },
+        "autoRenew": { "type": "boolean" },
+        "customRules": { "type": "string" },
+        "responsibleEmployeeId": { "type": "string" },
+        "status": { "type": "string", "enum": ["ativa", "cancelada", "suspensa", "finalizada"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "customerId", "planId", "contractValue", "billingCycle", "status"]
+    },
+    "Contract": {
+      "title": "Contract",
+      "description": "Legal contracts issued to customers with multi-company scope and status control",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "documentNumber": { "type": "string" },
+        "customerId": { "type": "string" },
+        "companyId": { "type": "string" },
+        "branchId": { "type": "string" },
+        "subscriptionId": { "type": "string" },
+        "templateId": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "terms": { "type": "string" },
+        "dynamicValues": { "type": "object" },
+        "status": { "type": "string", "enum": ["rascunho", "aguardando_assinatura", "emitido", "assinado", "ativo", "suspenso", "encerrado", "vencido", "cancelado"] },
+        "issuedAt": { "type": "string" },
+        "startDate": { "type": "string" },
+        "dueDate": { "type": "string" },
+        "endDate": { "type": "string" },
+        "contractValue": { "type": "number" },
+        "signedAt": { "type": "string" },
+        "signedBy": { "type": "string" },
+        "version": { "type": "number" },
+        "attachments": { "type": "array" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "customerId", "companyId", "documentNumber", "status"]
+    },
+    "ContractTemplate": {
+      "title": "ContractTemplate",
+      "description": "Templates for generating contracts",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "templateContent": { "type": "string" },
+        "defaultClauses": { "type": "string" },
+        "isDefault": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "name", "templateContent"]
+    },
+    "Invoice": {
+      "title": "Invoice",
+      "description": "Billing and invoice statements",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "invoiceNumber": { "type": "string" },
+        "customerId": { "type": "string" },
+        "companyId": { "type": "string" },
+        "branchId": { "type": "string" },
+        "subscriptionId": { "type": "string" },
+        "planId": { "type": "string" },
+        "amount": { "type": "number" },
+        "issueDate": { "type": "string" },
+        "dueDate": { "type": "string" },
+        "referencePeriod": { "type": "string" },
+        "description": { "type": "string" },
+        "paymentMethod": { "type": "string" },
+        "status": { "type": "string", "enum": ["agendada", "pendente", "enviada", "vencida", "parcialmente_paga", "paga", "cancelada", "em_contestacao"] },
+        "paidDate": { "type": "string" },
+        "paidAmount": { "type": "number" },
+        "transactionReference": { "type": "string" },
+        "notes": { "type": "string" },
+        "reminderStatus": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "invoiceNumber", "customerId", "amount", "dueDate", "status"]
+    },
+    "Payment": {
+      "title": "Payment",
+      "description": "Confirmed payments and receipts",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "invoiceId": { "type": "string" },
+        "customerId": { "type": "string" },
+        "companyId": { "type": "string" },
+        "branchId": { "type": "string" },
+        "amount": { "type": "number" },
+        "paymentDate": { "type": "string" },
+        "paymentMethod": { "type": "string" },
+        "transactionReference": { "type": "string" },
+        "registeredBy": { "type": "string" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "invoiceId", "customerId", "amount", "paymentDate"]
+    },
+    "Partner": {
+      "title": "Partner",
+      "description": "Commercial partners and affiliate referrers",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string" },
+        "name": { "type": "string" },
+        "docNumber": { "type": "string" },
+        "whatsapp": { "type": "string" },
+        "email": { "type": "string" },
+        "commissionRuleType": { "type": "string" },
+        "defaultCommissionRate": { "type": "number" },
+        "defaultFixedAmount": { "type": "number" },
+        "status": { "type": "string", "enum": ["ativo", "inativo"] },
+        "contactInfo": { "type": "string" },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "code", "name", "status"]
+    },
+    "Commission": {
+      "title": "Commission",
+      "description": "Calculated and paid partner commissions",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "partnerId": { "type": "string" },
+        "invoiceId": { "type": "string" },
+        "customerId": { "type": "string" },
+        "eligiblePaymentAmount": { "type": "number" },
+        "commissionAmount": { "type": "number" },
+        "status": { "type": "string", "enum": ["prevista", "calculada", "aprovada", "paga", "estornada"] },
+        "calculationDate": { "type": "string" },
+        "paidDate": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "partnerId", "commissionAmount", "status"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Immutable security and activity audit records with multi-company trace",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "companyId": { "type": "string" },
+        "branchId": { "type": "string" },
+        "action": { "type": "string" },
+        "entityType": { "type": "string" },
+        "entityId": { "type": "string" },
+        "details": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["id", "userEmail", "action", "timestamp"]
+    },
+    "Setting": {
+      "title": "Setting",
+      "description": "System settings and secure Master Owner configurations",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "key": { "type": "string" },
+        "value": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "key"]
+    },
+    "UserCredentials": {
+      "title": "UserCredentials",
+      "description": "Cryptographically hashed credentials and activation tokens for enterprise users",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email" },
+        "passwordHash": { "type": "string" },
+        "salt": { "type": "string" },
+        "role": { "type": "string" },
+        "companyId": { "type": "string" },
+        "branchId": { "type": "string" },
+        "name": { "type": "string" },
+        "status": { "type": "string" },
+        "inviteCode": { "type": "string" },
+        "isPasswordSet": { "type": "boolean" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["email", "role", "name", "status"]
+    },
+    "CompanyInvite": {
+      "title": "CompanyInvite",
+      "description": "Exclusive invitation tokens for partner company onboarding and access",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string" },
+        "type": { "type": "string", "enum": ["nova_empresa", "empresa_existente"] },
+        "status": { "type": "string", "enum": ["pendente", "utilizado", "expirado", "revogado"] },
+        "companyId": { "type": "string" },
+        "companyName": { "type": "string" },
+        "suggestedPlan": { "type": "string" },
+        "suggestedBranchesLimit": { "type": "number" },
+        "suggestedClientsLimit": { "type": "number" },
+        "recipientEmail": { "type": "string" },
+        "recipientName": { "type": "string" },
+        "recipientPhone": { "type": "string" },
+        "maxUses": { "type": "number" },
+        "usedCount": { "type": "number" },
+        "expiresAt": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "createdBy": { "type": "string" },
+        "requiresApproval": { "type": "boolean" },
+        "approvalStatus": { "type": "string", "enum": ["nenhuma", "pendente_aprovacao", "aprovado", "rejeitado"] },
+        "usedAt": { "type": "string" },
+        "usedByEmail": { "type": "string" },
+        "registeredCompanyId": { "type": "string" },
+        "registeredCompanyName": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "required": ["id", "code", "type", "status", "maxUses", "usedCount", "expiresAt", "createdAt"]
+    },
+    "SigmaConfig": {
+      "title": "SigmaConfig",
+      "description": "Configuration and status of the Sigma Reseller API integration",
+      "type": "object",
+      "properties": {
+        "status": { "type": "string", "enum": ["nao_configurada", "configurada", "erro", "indisponivel"] },
+        "hasToken": { "type": "boolean" },
+        "baseUrl": { "type": "string" },
+        "requiredScopes": { "type": "array" },
+        "allowedTrialHours": { "type": "array" },
+        "defaultTrialHours": { "type": "number" },
+        "defaultServerId": { "type": "string" },
+        "defaultServerName": { "type": "string" },
+        "defaultPackageId": { "type": "string" },
+        "defaultPackageName": { "type": "string" },
+        "updatedAt": { "type": "string" },
+        "updatedBy": { "type": "string" }
+      },
+      "required": ["status", "hasToken", "baseUrl", "requiredScopes"]
+    },
+    "SigmaCompanySettings": {
+      "title": "SigmaCompanySettings",
+      "description": "Rules, quotas and auto-approval modes for partner companies",
+      "type": "object",
+      "properties": {
+        "companyId": { "type": "string" },
+        "companyName": { "type": "string" },
+        "autoApproval": { "type": "boolean" },
+        "maxDailyTests": { "type": "number" },
+        "maxMonthlyTests": { "type": "number" },
+        "enabled": { "type": "boolean" },
+        "notes": { "type": "string" },
+        "updatedAt": { "type": "string" },
+        "updatedBy": { "type": "string" }
+      },
+      "required": ["companyId", "companyName", "autoApproval", "maxDailyTests", "maxMonthlyTests", "enabled"]
+    },
+    "SigmaTestRequest": {
+      "title": "SigmaTestRequest",
+      "description": "IPTV test requests and generated external customer access credentials",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "idempotencyKey": { "type": "string" },
+        "companyId": { "type": "string" },
+        "companyName": { "type": "string" },
+        "requestedByUserId": { "type": "string" },
+        "requestedByUserEmail": { "type": "string" },
+        "requestedByUserName": { "type": "string" },
+        "clientName": { "type": "string" },
+        "clientWhatsApp": { "type": "string" },
+        "clientEmail": { "type": "string" },
+        "serverId": { "type": "string" },
+        "serverName": { "type": "string" },
+        "packageId": { "type": "string" },
+        "packageName": { "type": "string" },
+        "trialHours": { "type": "number" },
+        "approvalStatus": { "type": "string", "enum": ["auto_aprovado", "pendente_aprovacao", "aprovado", "rejeitado"] },
+        "integrationStatus": { "type": "string", "enum": ["pendente", "processando", "criado", "erro", "resultado_desconhecido"] },
+        "externalCustomerId": { "type": "string" },
+        "externalUsername": { "type": "string" },
+        "externalPassword": { "type": "string" },
+        "externalExpiresAt": { "type": "string" },
+        "externalM3uUrl": { "type": "string" },
+        "requestedAt": { "type": "string" }
+      },
+      "required": ["id", "idempotencyKey", "companyId", "companyName", "clientName", "clientWhatsApp", "approvalStatus", "integrationStatus", "requestedAt"]
+    }
+  },
+  "firestore": {
+    "/company_invites/{inviteId}": {
+      "schema": "CompanyInvite",
+      "description": "Exclusive partner company invitations and activation tokens"
+    },
+    "/user_credentials/{credId}": {
+      "schema": "UserCredentials",
+      "description": "Credentials and invite tokens for company admins and staff"
+    },
+    "/companies/{companyId}": {
+      "schema": "PartnerCompany",
+      "description": "Partner companies and enterprises in the multi-company network"
+    },
+    "/branches/{branchId}": {
+      "schema": "Branch",
+      "description": "Branches and regional units belonging to a partner company"
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User accounts"
+    },
+    "/employee_profiles/{profileId}": {
+      "schema": "EmployeeProfile",
+      "description": "Employee and enterprise staff management and permissions"
+    },
+    "/customers/{customerId}": {
+      "schema": "Customer",
+      "description": "Client registrations scoped to company and branch"
+    },
+    "/plans/{planId}": {
+      "schema": "Plan",
+      "description": "Subscription plans"
+    },
+    "/subscriptions/{subId}": {
+      "schema": "Subscription",
+      "description": "Customer active subscriptions"
+    },
+    "/contracts/{contractId}": {
+      "schema": "Contract",
+      "description": "Generated customer contracts scoped to company and branch"
+    },
+    "/contract_templates/{templateId}": {
+      "schema": "ContractTemplate",
+      "description": "Contract models and templates"
+    },
+    "/invoices/{invoiceId}": {
+      "schema": "Invoice",
+      "description": "Invoices and recurring bills"
+    },
+    "/payments/{paymentId}": {
+      "schema": "Payment",
+      "description": "Payment confirmations"
+    },
+    "/partners/{partnerId}": {
+      "schema": "Partner",
+      "description": "Affiliate and sales partners"
+    },
+    "/commissions/{commId}": {
+      "schema": "Commission",
+      "description": "Partner commissions records"
+    },
+    "/audit_logs/{logId}": {
+      "schema": "AuditLog",
+      "description": "Security audit trails"
+    },
+    "/settings/{settingId}": {
+      "schema": "Setting",
+      "description": "System and Master Owner security settings"
+    },
+    "/sigma_company_settings/{companyId}": {
+      "schema": "SigmaCompanySettings",
+      "description": "Partner company test quotas and mode configuration"
+    },
+    "/sigma_test_requests/{testId}": {
+      "schema": "SigmaTestRequest",
+      "description": "Sigma IPTV test requests and credentials"
+    }
+  }
+}

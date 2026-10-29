@@ -1,0 +1,6 @@
+{
+  "name": "ONNIX PLAY Gestão",
+  "description": "Sistema de gestão comercial, clientes, contratos, cobranças e parceiros para ONNIX PLAY.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

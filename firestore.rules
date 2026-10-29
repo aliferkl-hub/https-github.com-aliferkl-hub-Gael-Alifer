@@ -1,0 +1,152 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isMasterOwner() {
+      return isSignedIn() && (
+        request.auth.token.email.lower() == 'alifermadeiro@hotmail.com' ||
+        request.auth.token.email.lower() == 'alifer.qualicare@gmail.com' ||
+        request.auth.token.email.lower() == 'alifergael76@gmail.com' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'MASTER_OWNER')
+      );
+    }
+
+    function isStaff() {
+      return isSignedIn() && (
+        isMasterOwner() ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == 'ativo')
+      );
+    }
+
+    // Public / bootstrap settings check
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isMasterOwner() || !isSignedIn();
+    }
+
+    // Company invites (read for validation/onboarding, write for Master or onboarding consumption)
+    match /company_invites/{inviteId} {
+      allow read: if true;
+      allow create, update: if isStaff() || isMasterOwner() || !isSignedIn();
+      allow delete: if isMasterOwner();
+    }
+
+    // User credentials (read for credential check & verification, write for Master or setup)
+    match /user_credentials/{credId} {
+      allow read: if true;
+      allow create, update: if isStaff() || isMasterOwner() || !isSignedIn();
+      allow delete: if isMasterOwner();
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isMasterOwner() || (isSignedIn() && request.auth.uid == userId);
+      allow delete: if isMasterOwner();
+    }
+
+    // Employee profiles
+    match /employee_profiles/{profileId} {
+      allow read: if isStaff();
+      allow write: if isMasterOwner();
+    }
+
+    // Customers
+    match /customers/{customerId} {
+      allow read: if isStaff();
+      allow create, update: if isStaff();
+      allow delete: if isMasterOwner();
+    }
+
+    // Plans
+    match /plans/{planId} {
+      allow read: if isStaff();
+      allow write: if isMasterOwner();
+    }
+
+    // Subscriptions
+    match /subscriptions/{subId} {
+      allow read, write: if isStaff();
+    }
+
+    // Contracts
+    match /contracts/{contractId} {
+      allow read, write: if isStaff();
+    }
+
+    // Contract templates
+    match /contract_templates/{templateId} {
+      allow read: if isStaff();
+      allow write: if isMasterOwner();
+    }
+
+    // Invoices / Cobranças
+    match /invoices/{invoiceId} {
+      allow read, write: if isStaff();
+    }
+
+    // Payments
+    match /payments/{paymentId} {
+      allow read, write: if isStaff();
+    }
+
+    // Partners
+    match /partners/{partnerId} {
+      allow read, write: if isStaff();
+    }
+
+    // Commissions
+    match /commissions/{commId} {
+      allow read, write: if isStaff();
+    }
+
+    // Companies
+    match /companies/{companyId} {
+      allow read: if isStaff();
+      allow write: if isMasterOwner();
+    }
+
+    // Branches
+    match /branches/{branchId} {
+      allow read: if isStaff();
+      allow write: if isMasterOwner();
+    }
+
+    // Message logs
+    match /message_logs/{logId} {
+      allow read, write: if isStaff();
+    }
+
+    // Audit logs - write append-only for staff, read for master owner
+    match /audit_logs/{logId} {
+      allow read: if isMasterOwner();
+      allow create: if isStaff();
+      allow update, delete: if false; // Immutable audit log
+    }
+
+    // Sigma integration company settings
+    match /sigma_company_settings/{companyId} {
+      allow read: if isStaff();
+      allow write: if isMasterOwner();
+    }
+
+    // Sigma test requests
+    match /sigma_test_requests/{testId} {
+      allow read: if isStaff();
+      allow create, update: if isStaff();
+      allow delete: if isMasterOwner();
+    }
+  }
+}
